@@ -9,26 +9,20 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ivosam.payroll.entities.Payment;
 import com.ivosam.payroll.entities.Worker;
+import com.ivosam.payroll.feignclients.WorkerFeignClient;
 
 @Service
 public class PaymentService {
 	
-	@Value("${hr-worker.host}")
-	private String workerHost;
+	final WorkerFeignClient workerFeignClient;
 	
-	final RestTemplate template;
-	
-	public PaymentService(RestTemplate template) {
-		this.template = template;
+	public PaymentService(WorkerFeignClient workerFeignClient) {
+		this.workerFeignClient = workerFeignClient;
 	}
 	
 	
 	public Payment getPayment(long workerId, int days) {
-		
-		Map<String, String> uriVariables = new HashMap<>();
-		uriVariables.put("id", String.valueOf(workerId));
-		
-		Worker worker = template.getForObject(workerHost+ "/workers/{id}", Worker.class, uriVariables);;
+		Worker worker = workerFeignClient.findById(workerId).getBody();
 		return new Payment(worker.getName(), worker.getDailyIncome(), days); 
 		
 	}
