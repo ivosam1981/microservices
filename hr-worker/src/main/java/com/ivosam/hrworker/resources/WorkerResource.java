@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ivosam.hrworker.entities.Worker;
 import com.ivosam.hrworker.services.WorkerService;
 
-
 @RestController
-@RequestMapping(value ="/workers")
+@RequestMapping(value = "/workers")
 public class WorkerResource {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(WorkerResource.class);
-	
+
 	final Environment env;
 	final WorkerService service;
 
@@ -28,24 +27,29 @@ public class WorkerResource {
 		this.service = service;
 		this.env = env;
 	}
-	
+
 	@GetMapping
-	ResponseEntity<List<Worker>> findAll(){
+	ResponseEntity<List<Worker>> findAll() {
 		List<Worker> list = service.findAll();
 		return ResponseEntity.ok(list);
 	}
-	
-	@GetMapping(value="/{id}")
-	ResponseEntity<Worker> findById(@PathVariable Long id){
+
+	@GetMapping(value = "/{id}")
+	ResponseEntity<Worker> findById(@PathVariable Long id) {
+
 		
+//  teste que simula um timeout na requisicao		
+//		try {
+//			Thread.sleep(3000L);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
 		logger.info("PORT = " + env.getProperty("local.server.port"));
-		
+
 		Worker obj = service.findById(id);
 		return ResponseEntity.ok(obj);
 	}
-	
-	
-	
-	
-	
+
 }
